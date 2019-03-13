@@ -1,0 +1,42 @@
+version: '3.0'
+services:
+  web:
+    image: alexcheng/magento2
+    ports:
+      - "80:80"
+    links:
+      - db
+    environment:
+      - MAGENTO_LANGUAGE=en_GB
+      - MAGENTO_DEFAULT_CURRENCY=USD
+      - MAGENTO_URL=$SQUASH_DOMAIN
+      - MAGENTO_BACKEND_FRONTNAME=admin
+      - MAGENTO_USE_SECURE=0
+      - MAGENTO_BASE_URL_SECURE=0
+      - MAGENTO_USE_SECURE_ADMIN=0
+
+      - MAGENTO_ADMIN_FIRSTNAME=Admin
+      - MAGENTO_ADMIN_LASTNAME=MyStore
+      - MAGENTO_ADMIN_EMAIL=amdin@example.com
+      - MAGENTO_ADMIN_USERNAME=admin
+      - MAGENTO_ADMIN_PASSWORD=magento
+    volumes:
+      - /dev/mytheme:/var/www/html/app/design/frontend/mytheme/default
+  db:
+    image: mysql:5.6.23
+    volumes:
+      - db-data:/var/lib/mysql/data
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_ROOT_PASSWORD=myrootpassword
+      - MYSQL_USER=magento
+      - MYSQL_PASSWORD=magento
+      - MYSQL_DATABASE=magento
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8580:80"
+    links:
+      - db
+volumes:
+  db-data:
